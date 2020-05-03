@@ -7,7 +7,11 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     listNotes: [],
-    numberDays: []
+    numberDays: [],
+    sizeCell: {
+      w: 0,
+      h: 0
+    }
   },
   mutations: {
     SET_NOTES (state, notes) {
@@ -15,6 +19,9 @@ export default new Vuex.Store({
     },
     SET_NUMBER_DAYS (state, numbers) {
       state.numberDays = numbers
+    },
+    SET_SIZE_CELL (state, { w, h }) {
+      state.sizeCell = { w, h }
     }
   },
   actions: {
