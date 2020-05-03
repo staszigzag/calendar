@@ -28,6 +28,14 @@ export default new Vuex.Store({
     SET_DRAG_NOTE (state, note) {
       console.log('SET_DRAG_NOTE')
       state.dragNote = note
+    },
+    UPDATE_TIME_NOTE (state, { day, hour }) {
+      console.log('UPDATE_TIME_NOTE')
+      const note = state.listNotes.find(n => n.id === state.dragNote.id)
+      if (note) {
+        note.dayWeek = day
+        note.hour = hour
+      }
     }
   },
   actions: {

@@ -31,6 +31,9 @@ export default {
   data () {
     return {}
   },
+  computed: {
+    ...mapState(['sizeCell', 'dragNote'])
+  },
   mounted () {
     this.$el.onmousedown = () => {
       const onMouseMove = () => {
@@ -46,10 +49,6 @@ export default {
   methods: {
     handlerClickNote () {
     }
-  },
-
-  computed: {
-    ...mapState(['sizeCell', 'dragNote'])
   }
 
 }

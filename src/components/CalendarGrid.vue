@@ -51,6 +51,11 @@
           :key="note.id + 'note'"
           :note="note"
         />
+        <calendar-grid-controller-note
+          v-if="dragNote"
+          :wrap="$refs.wrapGrid"
+          :view="$refs.viewGrid"
+        />
       </div>
     </div>
   </section>
@@ -58,26 +63,25 @@
 
 <script>
 import CalendarGridNote from './CalendarGridNote'
+import CalendarGridControllerNote from './CalendarGridControllerNote'
 import { mapState } from 'vuex'
 
 export default {
   name: 'Calendar',
   components: {
-    CalendarGridNote
+    CalendarGridNote,
+    CalendarGridControllerNote
   },
   data () {
     return {
-      scrollTop: 0,
       days: ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
     }
   },
   mounted () {
     console.log(this.listNotes)
     this.setSizeCell()
+    // следим за размерами окна
     window.onresize = this.setSizeCell
-    // this.$refs.viewGrid.onscroll = () => {
-    //   this.scrollTop = this.$refs.viewGrid.scrollTop
-    // }
   },
   methods: {
     setSizeCell () {
@@ -90,7 +94,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['listNotes', 'numberDays'])
+    ...mapState(['listNotes', 'numberDays', 'dragNote'])
   }
 }
 </script>
