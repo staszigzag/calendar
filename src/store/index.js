@@ -7,6 +7,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     listNotes: [],
+    dragNote: null,
+
     numberDays: [],
     sizeCell: {
       w: 0,
@@ -22,6 +24,10 @@ export default new Vuex.Store({
     },
     SET_SIZE_CELL (state, { w, h }) {
       state.sizeCell = { w, h }
+    },
+    SET_DRAG_NOTE (state, note) {
+      console.log('SET_DRAG_NOTE')
+      state.dragNote = note
     }
   },
   actions: {

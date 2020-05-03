@@ -1,6 +1,9 @@
 <template>
   <div
     class="note"
+    :class="{
+      'note--drag': dragNote ? note.id === dragNote.id : false
+    }"
     :data-id="note.id"
     :style="{
       left: sizeCell.w * (note.dayWeek - 1 ) + 'px',
@@ -28,12 +31,25 @@ export default {
   data () {
     return {}
   },
+  mounted () {
+    this.$el.onmousedown = () => {
+      const onMouseMove = () => {
+        // при нажатии плюс движение курсора запоминаем эту заметку
+        this.$store.commit('SET_DRAG_NOTE', this.note)
+        // удалим сразу обработчик
+        document.removeEventListener('mousemove', onMouseMove)
+      }
+
+      document.addEventListener('mousemove', onMouseMove)
+    }
+  },
   methods: {
     handlerClickNote () {
     }
   },
+
   computed: {
-    ...mapState(['sizeCell'])
+    ...mapState(['sizeCell', 'dragNote'])
   }
 
 }
