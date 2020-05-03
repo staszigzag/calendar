@@ -2,8 +2,8 @@
   <div
     class="note-controller"
   >
-    <!-- {{ scrollTopWrap }} -->
-    {{ h }}:00 - {{ +h + 1 }}:00
+    day week {{ d }}<br>
+    {{ h }}:00 - {{ Number(h) + 1 }}:00
   </div>
 </template>
 
@@ -24,8 +24,6 @@ export default {
   data () {
     return {
       scrollTopWrap: 0,
-      // d: this.dragNote.dayWeek || 0,
-      // h: this.dragNote.hour || 0
       viewLeftDistance: 0,
       viewTopDistance: 0,
       d: 0,
@@ -53,18 +51,28 @@ export default {
       this.scrollTopWrap = this.view.scrollTop
     },
     controlCordinatesControllera (viewGridX, viewGridY) {
-      // ограничение слева
-      if (viewGridY > this.$el.offsetHeight / 2) {
-        this.$el.style.top = viewGridY - this.$el.offsetHeight / 2 + this.scrollTopWrap + 'px'
-      } else {
+      // если выше view календаря
+      if (viewGridY < this.$el.offsetHeight / 2) {
         this.$el.style.top = this.scrollTopWrap + 'px'
+      } else {
+        // если ниже view календаря
+        if (viewGridY > this.view.offsetHeight - this.$el.offsetHeight / 2) {
+          this.$el.style.top = Math.floor(this.view.offsetHeight - this.$el.offsetHeight + this.scrollTopWrap) + 'px'
+        } else {
+          this.$el.style.top = viewGridY - this.$el.offsetHeight / 2 + this.scrollTopWrap + 'px'
+        }
       }
 
-      // ограничение сверху
-      if (viewGridX > this.$el.offsetWidth / 2) {
-        this.$el.style.left = viewGridX - this.$el.offsetWidth / 2 + 'px'
-      } else {
+      // если курсор левее wrap календаря
+      if (viewGridX < this.$el.offsetWidth / 2) {
         this.$el.style.left = '0px'
+      } else {
+        // если правее wrap календаря
+        if (viewGridX > this.wrap.offsetWidth - this.$el.offsetWidth / 2) {
+          this.$el.style.left = Math.floor(this.wrap.offsetWidth - this.$el.offsetWidth) + 'px'
+        } else {
+          this.$el.style.left = viewGridX - this.$el.offsetWidth / 2 + 'px'
+        }
       }
     },
     getBelowElem () {
@@ -74,12 +82,11 @@ export default {
       return elemBelow
     },
     handlerMoveMouse (event) {
-      console.log('handlerMoveMouse')
       // узнать над каким элементом сейчас контроллер
       const elemBelow = this.getBelowElem()
 
-      if (elemBelow.dataset.row) this.d = elemBelow.dataset.row - 1
-      if (elemBelow.dataset.cell) this.h = elemBelow.dataset.cell - 1
+      if (elemBelow && elemBelow.dataset && elemBelow.dataset.row) this.d = elemBelow.dataset.row
+      if (elemBelow && elemBelow.dataset && elemBelow.dataset.cell) this.h = elemBelow.dataset.cell
 
       this.controlCordinatesControllera(event.pageX - this.viewLeftDistance, event.pageY - this.viewTopDistance)
     },
@@ -87,9 +94,9 @@ export default {
       console.log('handlerUpKeyMouse')
       // узнать над каким элементом отпустили кнопку
       const elemBelow = this.getBelowElem()
-
-      if (elemBelow.dataset && elemBelow.dataset.id) console.log('id elem', elemBelow.dataset.id)
-      else if (elemBelow.dataset && elemBelow.dataset.row) this.$store.commit('UPDATE_TIME_NOTE', { day: elemBelow.dataset.row, hour: elemBelow.dataset.cell - 1 })
+      if (elemBelow && elemBelow.dataset && elemBelow.dataset.row) {
+        this.$store.commit('UPDATE_TIME_NOTE', { day: elemBelow.dataset.row, hour: elemBelow.dataset.cell })
+      }
 
       this.$store.commit('SET_DRAG_NOTE', null)
 

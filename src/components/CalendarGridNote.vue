@@ -2,18 +2,22 @@
   <div
     class="note"
     :class="{
-      'note--drag': dragNote ? note.id === dragNote.id : false
+      'note--drag': dragNote ? note.id === dragNote.id : false,
+      'note--small': note.isTimeAm || note.isTimePm,
+      'note--time-am': note.isTimeAm
+
     }"
-    :data-id="note.id"
+    :data-row="note.dayWeek"
+    :data-cell="note.hour"
     :style="{
-      left: sizeCell.w * (note.dayWeek - 1 ) + 'px',
-      top: sizeCell.h * note.hour + 'px'
+      left: sizeCell.w * (note.dayWeek - 1) + 'px',
+      top: (sizeCell.h * note.hour + 1) + sizeTimePm + 'px',
     }"
-    @click="handlerClickNote"
   >
     {{ note.title }}
     <br>
-    {{ note.hour }}:00 - {{ note.hour + 1 }}:00
+    <!-- убрать время когда мини версия -->
+    {{ note.isTimeAm || note.isTimePm ? '' : `${note.hour}:00 - ${note.hour + 1}:00` }}
   </div>
 </template>
 
@@ -32,7 +36,10 @@ export default {
     return {}
   },
   computed: {
-    ...mapState(['sizeCell', 'dragNote'])
+    ...mapState(['sizeCell', 'dragNote']),
+    sizeTimePm () {
+      return this.note.isTimePm ? this.sizeCell.h / 2 : 0
+    }
   },
   mounted () {
     this.$el.onmousedown = () => {
@@ -45,12 +52,7 @@ export default {
 
       document.addEventListener('mousemove', onMouseMove)
     }
-  },
-  methods: {
-    handlerClickNote () {
-    }
   }
-
 }
 </script>
 
@@ -68,6 +70,9 @@ export default {
   }
   &--small {
     height: $heightCell/2;
+  }
+  &--time-am{
+    border-bottom: 1px solid $colorBorderCell;
   }
 }
 </style>

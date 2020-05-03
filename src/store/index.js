@@ -16,8 +16,24 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    SET_NOTES (state, notes) {
-      state.listNotes = notes
+    SET_NEW_NOTES (state, notes = []) {
+      notes.forEach(note => {
+        // проверяем есть ли совпадения с другими заметками
+        const notesCompetitor = state.listNotes.filter(n => n.dayWeek === note.dayWeek && n.hour === note.hour)
+        // нет совпадений
+        if (!notesCompetitor.length) state.listNotes.push(note)
+        // нет места, игнорируем
+        if (notesCompetitor.length > 1) {
+          console.warn('not places for note', note)
+          return
+        }
+        // добавлям мини режим и пушим
+        if (notesCompetitor.length === 1) {
+          notesCompetitor[0].isTimeAm = true
+          note.isTimePm = true
+          state.listNotes.push(note)
+        }
+      })
     },
     SET_NUMBER_DAYS (state, numbers) {
       state.numberDays = numbers
@@ -31,10 +47,36 @@ export default new Vuex.Store({
     },
     UPDATE_TIME_NOTE (state, { day, hour }) {
       console.log('UPDATE_TIME_NOTE')
-      const note = state.listNotes.find(n => n.id === state.dragNote.id)
-      if (note) {
-        note.dayWeek = day
-        note.hour = hour
+      day = Number(day)
+      hour = Number(hour)
+      // заметки с поле с которого взяли заметку
+      const notesFrom = state.listNotes.filter(n => n.dayWeek === state.dragNote.dayWeek && n.hour === state.dragNote.hour)
+      console.log('from', notesFrom.length)
+      // заметоки на поле на которое положили
+      const notesTo = state.listNotes.filter(n => n.dayWeek === day && n.hour === hour)
+      console.log('to', notesTo.length)
+      // если на поле уже две заметки
+      if (notesTo.length > 1) return
+
+      if (notesFrom.length > 1) {
+        // сбросить размер заметок
+        notesFrom.forEach(n => {
+          n.isTimeAm = n.isTimePm = false
+        })
+      }
+      // нет заметки
+      if (!notesTo.length) {
+        state.dragNote.dayWeek = day
+        state.dragNote.hour = hour
+        return
+      }
+      // одна заметка на поле и не та которую тянут
+      if (notesTo.length === 1 && notesTo[0].id !== state.dragNote.id) {
+        state.dragNote.dayWeek = day
+        state.dragNote.hour = hour
+        state.dragNote.isTimePm = true
+
+        notesTo[0].isTimeAm = true
       }
     }
   },
@@ -42,7 +84,7 @@ export default new Vuex.Store({
     async getNotes ({ commit }) {
       const notes = await getNotes()
       console.log('notes from api', notes)
-      commit('SET_NOTES', notes)
+      commit('SET_NEW_NOTES', notes)
       // на основе первой заметки, находим все числа для недели
       const numberDays = findDaysOfWeek(notes[0].timestamp)
       commit('SET_NUMBER_DAYS', numberDays)

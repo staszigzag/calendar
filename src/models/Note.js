@@ -12,6 +12,9 @@ export default class Note {
     this.hour = start.getHours()
     this.day = start.getDate()
     this.mounth = start.getMonth() + 1
+
+    this.isTimeAm = false
+    this.isTimePm = false
   }
 
   setDay (hour, dayWeek = this.dayWeek, day = this.day, month = this.mounth) {

@@ -24,7 +24,7 @@
           :key="j"
           class="calendar__cell calendar__cell--first"
         >
-          {{ j }}:00
+          {{ --j }}:00
         </li>
       </ul>
       <div
@@ -40,10 +40,10 @@
             v-for="j in 24"
             :key="j"
             :data-row="i"
-            :data-cell="j"
+            :data-cell="--j"
             class="calendar__cell"
           >
-            {{ j }}:{{ i }}
+            <!-- {{ j }}:{{ i }} -->
           </li>
         </ul>
         <calendar-grid-note
@@ -149,7 +149,7 @@ export default {
     &--first {
       border: hidden;
       border-top: 1px solid $colorBorderCell;
-      padding-top: 30px;
+      padding-bottom: 30px;
     }
   }
 }
