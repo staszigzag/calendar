@@ -5,9 +5,17 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'Calendar',
+  mounted () {
+    console.log(this.listNotes)
+  },
   methods: {
+  },
+  computed: {
+    ...mapState(['listNotes', 'numberDays'])
   }
 }
 </script>
