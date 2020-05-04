@@ -66,14 +66,12 @@ export default new Vuex.Store({
       }
       // нет заметки
       if (!notesTo.length) {
-        state.dragNote.dayWeek = day
-        state.dragNote.hour = hour
+        state.dragNote.setTime(hour, day)
         return
       }
       // одна заметка на поле и не та которую тянут
       if (notesTo.length === 1 && notesTo[0].id !== state.dragNote.id) {
-        state.dragNote.dayWeek = day
-        state.dragNote.hour = hour
+        state.dragNote.setTime(hour, day)
         state.dragNote.isTimePm = true
 
         notesTo[0].isTimeAm = true

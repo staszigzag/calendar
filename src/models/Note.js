@@ -10,23 +10,27 @@ export default class Note {
     const start = new Date(this.timestamp)
     this.dayWeek = start.getDay() || 7
     this.hour = start.getHours()
-    this.day = start.getDate()
-    this.mounth = start.getMonth() + 1
 
     this.isTimeAm = false
     this.isTimePm = false
   }
 
-  setDay (hour, dayWeek = this.dayWeek, day = this.day, month = this.mounth) {
-    if (!hour) return console.error('not value hour')
-    if (day < 0 || day > 31) return console.error('not valid day')
+  setTime (hour, dayWeek) {
+    if (hour === undefined) return console.error('not value hour')
+    if (dayWeek === undefined) return console.error('not value day Week')
+    if (dayWeek < 0 || dayWeek > 7) return console.error('not valid day week')
     if (hour < 0 || hour > 23) return console.error('not valid hour')
-    if (month < 0 || month > 12) return console.error('not valid month')
 
-    console.log(hour, day, month)
+    // разница в днях
+    const deltaDay = dayWeek - this.dayWeek
+    const d = new Date(this.timestamp)
+    d.setDate(d.getDate() + deltaDay)
+    d.setHours(hour)
+    d.setMinutes(0)
+    // обновляем временную метку внутри заметки
+    this.timestamp = d.getTime()
+    console.log('new time start', d)
     this.hour = hour
     this.dayWeek = dayWeek
-    this.day = day
-    this.mounth = month
   }
 }

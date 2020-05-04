@@ -11,7 +11,7 @@
     :data-cell="note.hour"
     :style="{
       left: sizeCell.w * (note.dayWeek - 1) + 'px',
-      top: (sizeCell.h * note.hour + 1) + sizeTimePm + 'px',
+      top: (sizeCell.h * note.hour + 1) + offsetTimePm + 'px',
     }"
   >
     {{ note.title }}
@@ -37,7 +37,7 @@ export default {
   },
   computed: {
     ...mapState(['sizeCell', 'dragNote']),
-    sizeTimePm () {
+    offsetTimePm () {
       return this.note.isTimePm ? this.sizeCell.h / 2 : 0
     }
   },
@@ -63,16 +63,18 @@ export default {
   border-radius: 5px;
   position: absolute;
   background-color: $colorNote;
+  border: 1px solid$colorBorderCell;
   color: $colorTextNote;
   z-index: 999;
   &--drag {
     background-color: $colorNoteDrag;
+    color: $colorTextNoteDrag;
   }
   &--small {
     height: $heightCell/2;
   }
   &--time-am{
-    border-bottom: 1px solid $colorBorderCell;
+    border-bottom: 2px solid white;
   }
 }
 </style>

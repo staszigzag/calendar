@@ -1,17 +1,15 @@
 <template>
   <section class="calendar">
     <ul class="calendar__days">
-      <li class="calendar__day calendar__day--first">
-        time
-      </li>
+      <li class="calendar__day calendar__day--first" />
       <li
         v-for="(day, i) in days"
         :key="i"
         class="calendar__day"
       >
-        {{ day }}
+        <span class="calendar__day-week">{{ day }}</span>
         <br>
-        {{ numberDays[i] }}
+        <span class="calendar__day-num">{{ numberDays[i] }}</span>
       </li>
     </ul>
     <div
@@ -24,7 +22,10 @@
           :key="j"
           class="calendar__cell calendar__cell--first"
         >
-          {{ --j }}:00
+          <span
+            v-if="j !== 1"
+            class="calendar__hour"
+          >{{ --j }}:00</span>
         </li>
       </ul>
       <div
@@ -42,9 +43,7 @@
             :data-row="i"
             :data-cell="--j"
             class="calendar__cell"
-          >
-            <!-- {{ j }}:{{ i }} -->
-          </li>
+          />
         </ul>
         <calendar-grid-note
           v-for="note in listNotes"
@@ -78,7 +77,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.listNotes)
     this.setSizeCell()
     // следим за размерами окна
     window.onresize = this.setSizeCell
@@ -102,7 +100,7 @@ export default {
 <style scoped lang="scss">
 
 .calendar {
-  min-width: 400px;
+  min-width: 700px;
   max-width: $maxWidthCalendar;
 
   &__days {
@@ -111,8 +109,14 @@ export default {
   }
   &__day {
     flex-grow: 1;
-    border: 1px solid $colorBorderDay;
     height: $heightCell;
+    &-num{
+      font-size: 26px;
+    }
+    &-week{
+      color: #70757a;
+      font-size: 12px;
+    }
     &--first {
       width: $widthFirstCell;
       flex-grow: 0
@@ -121,9 +125,8 @@ export default {
 
   &__view-grid {
     display: flex;
-    max-height: 70vh;
+    max-height: 80vh;
     overflow-y: scroll;
-    border: 1px solid $colorBorderViewGrid;
   }
 
   &__wrap-grid {
@@ -143,14 +146,25 @@ export default {
   &__cell {
     border: 1px solid $colorBorderCell;
     height: $heightCell;
-    // &:hover {
-    //   background-color rgba(216, 189, 115, 0.2);
-    //   // background-color rgba(216, 189, 115, 0.2);
     &--first {
       border: hidden;
-      border-top: 1px solid $colorBorderCell;
-      padding-bottom: 30px;
+      position: relative;
+      &::after {
+        content: '';
+        width: 15px;
+        height: 2px;
+        position: absolute;
+        right: 0px;
+        top: -1px;
+        background-color: $colorBorderCell;
+      }
     }
+  }
+  &__hour{
+    position: relative;
+    top: -10px;
+    color: #70757a;
+    font-size: 14px;
   }
 }
 </style>
