@@ -1,7 +1,7 @@
 import NoteModel from '../models/Note.js'
 
 export function getNotes () {
-  const url = '/assets/date.json'
+  const url = './assets/date.json'
   return fetch(url)
     .then(response => response.json())
     .then(notes => {
